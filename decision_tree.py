@@ -1,0 +1,53 @@
+import numpy as np
+
+
+class Node:
+
+    def __init__ (self,  attribute, value=-1, left=None, right=None, leafornot=False):
+        self.attribute = attribute
+        self.value = value
+        self.left = left
+        self.right = right
+        self.leafornot = leafornot
+
+
+def decision_tree_learning(ds, depth):
+    left_ds = []
+    right_ds = []
+    firstLabel = ds[0][7]
+
+    for currentLabel in ds:
+        if(currentLabel[7] != firstLabel):
+            #find_split → attribute index "i", decision value "n"
+            i = 0
+            n = -50
+
+            print(currentLabel)
+
+            for row in ds:
+                if(row[i] < n):
+                    left_ds.append(row)
+                    print(row)
+                else:
+                    right_ds.append(row)
+
+            # recursion
+            lChild, lDepth = decision_tree_learning(left_ds, depth+1)
+            rChild, rDepth = decision_tree_learning(left_ds, depth+1)
+            node = Node(i, n, lChild, rChild, False) #new node
+            return  (node, max(lDepth, rDepth)) # return decision node
+
+    return (Node(7, label, True), depth) # return leaf node
+
+
+
+
+clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
+
+print(clean_ds[0])
+
+###trained_tree_node = {'attribute', 'value', 'left', 'right', leafornot (bool)}
+# non leaf  -> Node(0, -87, Right, Left, False)
+# leaf -> Node(7, 1)
+
+root, depth= decision_tree_learning(clean_ds, 0)
