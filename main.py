@@ -1,5 +1,5 @@
 import numpy as np
-clean_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
+clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
 #noisy_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
 np.set_printoptions(threshold=np.inf)
 #print(noisy_ds)
