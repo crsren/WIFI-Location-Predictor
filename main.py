@@ -71,9 +71,6 @@ def H(labels):
             p4 += 1
 
 
-
-
-
     if(p1!=0):
         p1 = p1/len(labels)
         p1 = p1*np.log2(p1)
