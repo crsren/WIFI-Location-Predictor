@@ -7,9 +7,49 @@ np.set_printoptions(threshold=np.inf)
 #print(clean_ds[0])
 
 
+class Node:
+
+    def __init__ (self,  attribute, value=-1, left=None, right=None, leafornot=False):
+        self.attribute = attribute
+        self.value = value
+        self.left = left
+        self.right = right
+        self.leafornot = leafornot
 
 
+def decision_tree_learning(ds, depth):
 
+
+    left_ds = np.empty(shape=[0, 8])
+    right_ds = np.empty(shape=[0, 8])
+
+    firstLabel = ds[0][7]
+
+    for currentLabel in ds:
+        if(currentLabel[7] != firstLabel):
+            #find_split → attribute index "i", decision value "n"
+            c = find_split(ds)
+            i = c[0]
+            n = c[1]
+
+            for row in ds:
+                if(row[i] < n):
+                    left_ds = np.vstack([left_ds,row])
+                else:
+                    right_ds = np.vstack([right_ds,row])
+            print("–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––")
+            print("LDS: ", left_ds.size, "RDS: ", right_ds.size)
+            # recursion
+            if(left_ds.size != 0): lChild, lDepth = decision_tree_learning(left_ds, depth+1)
+            if(right_ds.size != 0): rChild, rDepth = decision_tree_learning(right_ds, depth+1)
+            node = Node(i, n, lChild, rChild, False) #new node
+            return  (node, max(lDepth, rDepth)) # return decision node
+
+    return (Node(7, firstLabel, True), depth) # return leaf node
+
+###trained_tree_node = {'attribute', 'value', 'left', 'right', leafornot (bool)}
+# non leaf  -> Node(0, -87, Right, Left, False)
+# leaf -> Node(7, 1)
 
 ###NOTES
 # - stick with less than for decision
@@ -33,15 +73,15 @@ def find_split(ds):
                 if(col[k]>j):
                     Sleft = split_left(rooms,k)
                     Sright = split_right(rooms,k)
-                    ind=k
+                    #ind=k
                     #print(Sleft)
                     break
 
             gain = info_gain(ds[:,7],Sleft, Sright)
-            print(gain)
+            #print(gain)
             if(gain>mx):
                 mx=gain
-                split_point=[i,j,ind]
+                split_point=[i,j]
                 print("Max is ",mx)
                 print("split point is ", split_point)
 
@@ -52,7 +92,7 @@ def find_split(ds):
     print (split_point)
     ds=ds[ds[:,0].argsort()]
     print(split_right(ds,1012))
-    return
+    return (split_point)
 
 def split_left(arr,split_point):
     return arr[:split_point]
@@ -109,12 +149,15 @@ def remainder(Sleft,Sright):
 
 
 
-
-
-
 def main():
-    find_split(clean_ds)
+
+    clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
+    root, depth = decision_tree_learning(clean_ds, 0)
+    print(depth)
+
 
     return
+
+
 if __name__ == '__main__':
         main()
