@@ -1,5 +1,5 @@
 import numpy as np
-clean_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
+clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
 #noisy_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
 np.set_printoptions(threshold=np.inf)
 #print(noisy_ds)
@@ -28,10 +28,12 @@ def find_split(ds):
         #print(rooms)
         #print(col)
         for j in range (int(min(col)), int(max(col))):
+            ind=0
             for k in range(0,2000):
                 if(col[k]>j):
-                    Sleft = rooms[:k]
-                    Sright = rooms[k+1:]
+                    Sleft = split_left(rooms,k)
+                    Sright = split_right(rooms,k)
+                    ind=k
                     #print(Sleft)
                     break
 
@@ -39,7 +41,7 @@ def find_split(ds):
             print(gain)
             if(gain>mx):
                 mx=gain
-                split_point=[i,j]
+                split_point=[i,j,ind]
                 print("Max is ",mx)
                 print("split point is ", split_point)
 
@@ -48,7 +50,15 @@ def find_split(ds):
 
             # info_gain(ds[:,i],Sleft, Sright)
     print (split_point)
+    ds=ds[ds[:,0].argsort()]
+    print(split_right(ds,1012))
     return
+
+def split_left(arr,split_point):
+    return arr[:split_point]
+
+def split_right(arr,split_point):
+    return arr[split_point+1:]
 
 def info_gain(S,Sleft,Sright):
 
