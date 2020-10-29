@@ -31,18 +31,25 @@ def decision_tree_learning(ds, depth):
             c = find_split(ds)
             i = c[0]
             n = c[1]
+            print ("Split on ", i, " by ", n)
 
             for row in ds:
                 if(row[i] < n):
                     left_ds = np.vstack([left_ds,row])
                 else:
                     right_ds = np.vstack([right_ds,row])
-            print("–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––")
+            
             print("LDS: ", left_ds.size, "RDS: ", right_ds.size)
+            if (right_ds.size == 0):
+              #print(left_ds)
+              break
+            if (left_ds.size == 0):
+              #print(right_ds)
+              break
             # recursion
             if(left_ds.size != 0): lChild, lDepth = decision_tree_learning(left_ds, depth+1)
             if(right_ds.size != 0): rChild, rDepth = decision_tree_learning(right_ds, depth+1)
-            node = Node(i, n, lChild, rChild, False) #new node
+            node = Node(i, n, lChild, rChild, False) # new node
             return  (node, max(lDepth, rDepth)) # return decision node
 
     return (Node(7, firstLabel, True), depth) # return leaf node
@@ -68,7 +75,6 @@ def find_split(ds):
         #print(rooms)
         #print(col)
         for j in range (int(min(col)), int(max(col))):
-            ind=0
             for k in range(0,2000):
                 if(col[k]>j):
                     Sleft = split_left(rooms,k)
@@ -82,16 +88,16 @@ def find_split(ds):
             if(gain>mx):
                 mx=gain
                 split_point=[i,j]
-                print("Max is ",mx)
-                print("split point is ", split_point)
+                #print("Max is ",mx)
+                #print("split point is ", split_point)
 
 
 
 
             # info_gain(ds[:,i],Sleft, Sright)
-    print (split_point)
+    #print (split_point)
     ds=ds[ds[:,0].argsort()]
-    print(split_right(ds,1012))
+    #print(split_right(ds,1012))
     return (split_point)
 
 def split_left(arr,split_point):
