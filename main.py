@@ -4,9 +4,6 @@ import networkx
 clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
 #noisy_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
 np.set_printoptions(threshold=np.inf)
-#print(noisy_ds)
-#print(clean_ds)
-#print(clean_ds[0])
 
 
 class Node:
@@ -35,21 +32,22 @@ def decision_tree_learning(ds, depth):
             print ("Split on ", i, " by ", n)
 
             for row in ds:
-                if(row[i] < n):
+                if(row[i] > n):
                     left_ds = np.vstack([left_ds,row])
                 else:
                     right_ds = np.vstack([right_ds,row])
 
-            print("–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––")
             print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
-            if(right_ds.size == 64): print(right_ds)
 
             # recursion
-            if(left_ds.size != 0): lChild, lDepth = decision_tree_learning(left_ds, depth+1)
-            if(right_ds.size != 0): rChild, rDepth = decision_tree_learning(right_ds, depth+1)
+            if(left_ds.size != 0): 
+                lChild, lDepth = decision_tree_learning(left_ds, depth+1)
+            if(right_ds.size != 0): 
+                rChild, rDepth = decision_tree_learning(right_ds, depth+1)
             node = Node(i, n, lChild, rChild, False) # new node
             return  (node, max(lDepth, rDepth)) # return decision node
 
+    print("Leaf:", firstLabel, depth, len(ds))
     return (Node(7, firstLabel, True), depth) # return leaf node
 
 ###trained_tree_node = {'attribute', 'value', 'left', 'right', leafornot (bool)}
@@ -70,40 +68,28 @@ def find_split(ds):
         ds=ds[ds[:,i].argsort()]
         col = ds[:,i]
         rooms = ds[:,7]
-        #print(rooms)
-        #print(col)
+    
+    
         for j in range (int(min(col)), int(max(col))):
             for k in range(0,2000):
                 if(col[k]>j):
                     Sleft = rooms[:k]
                     Sright = rooms[k:]
                     #ind=k
-                    #print(Sleft)
                     break
 
             gain = info_gain(ds[:,7],Sleft, Sright)
-            print("Gain for ", i, j, gain)
-            #print(gain)
+ 
             if(gain>mx):
                 mx=gain
                 split_point=[i,j]
 
-                print("SPAGHETTI", mx, split_point)
 
-
-
-
-
-            # info_gain(ds[:,i],Sleft, Sright)
-    #print (split_point)
     ds=ds[ds[:,0].argsort()]
-    #print(split_right(ds,1012))
+
     return (split_point)
 
 def info_gain(S,Sleft,Sright):
-    print("!!!")
-    print(S,Sleft,Sright)
-    print(H(S), remainder(Sleft,Sright))
     return H(S) - remainder(Sleft,Sright)
 
 
