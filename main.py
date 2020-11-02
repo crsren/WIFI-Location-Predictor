@@ -1,4 +1,6 @@
 import numpy as np
+import networkx
+
 clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
 #noisy_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
 np.set_printoptions(threshold=np.inf)
@@ -19,7 +21,6 @@ class Node:
 
 def decision_tree_learning(ds, depth):
 
-
     left_ds = np.empty(shape=[0, 8])
     right_ds = np.empty(shape=[0, 8])
 
@@ -38,14 +39,11 @@ def decision_tree_learning(ds, depth):
                     left_ds = np.vstack([left_ds,row])
                 else:
                     right_ds = np.vstack([right_ds,row])
-            
-            print("LDS: ", left_ds.size, "RDS: ", right_ds.size)
-            if (right_ds.size == 0):
-              #print(left_ds)
-              break
-            if (left_ds.size == 0):
-              #print(right_ds)
-              break
+
+            print("–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––")
+            print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
+            if(right_ds.size == 64): print(right_ds)
+
             # recursion
             if(left_ds.size != 0): lChild, lDepth = decision_tree_learning(left_ds, depth+1)
             if(right_ds.size != 0): rChild, rDepth = decision_tree_learning(right_ds, depth+1)
@@ -77,19 +75,21 @@ def find_split(ds):
         for j in range (int(min(col)), int(max(col))):
             for k in range(0,2000):
                 if(col[k]>j):
-                    Sleft = split_left(rooms,k)
-                    Sright = split_right(rooms,k)
+                    Sleft = rooms[:k]
+                    Sright = rooms[k:]
                     #ind=k
                     #print(Sleft)
                     break
 
             gain = info_gain(ds[:,7],Sleft, Sright)
+            print("Gain for ", i, j, gain)
             #print(gain)
             if(gain>mx):
                 mx=gain
                 split_point=[i,j]
-                #print("Max is ",mx)
-                #print("split point is ", split_point)
+
+                print("SPAGHETTI", mx, split_point)
+
 
 
 
@@ -100,56 +100,36 @@ def find_split(ds):
     #print(split_right(ds,1012))
     return (split_point)
 
-def split_left(arr,split_point):
-    return arr[:split_point]
-
-def split_right(arr,split_point):
-    return arr[split_point+1:]
-
 def info_gain(S,Sleft,Sright):
-
+    print("!!!")
+    print(S,Sleft,Sright)
+    print(H(S), remainder(Sleft,Sright))
     return H(S) - remainder(Sleft,Sright)
 
 
 def H(labels):
-    p1=0
-    p2=0
-    p3=0
-    p4=0
-    for i in range(0,len(labels)):
-        if labels[i]==1:
-            p1 += 1
-        elif labels[i]==2:
-            p2 += 1
-        elif labels[i]==3:
-            p3 += 1
-        elif labels[i]==4:
-            p4 += 1
+    p1=p2=p3=p4=0
 
-
-
-
+    for i in labels:
+        if i==1: p1 += 1
+        elif i==2: p2 += 1
+        elif i==3: p3 += 1
+        elif i==4: p4 += 1
 
     if(p1!=0):
-        p1 = p1/len(labels)
-        p1 = p1*np.log2(p1)
+        p1 = p1*p1/len(labels)*np.log2(p1/len(labels))
     if(p2!=0):
-        p2 = p2/len(labels)
-        p2 = p2*np.log2(p2)
+        p2 = p2*p2/len(labels)*np.log2(p2/len(labels))
     if(p3!=0):
-        p3 = p3/len(labels)
-        p3 = p3*np.log2(p3)
+        p3 = p3*p3/len(labels)*np.log2(p3/len(labels))
     if(p4!=0):
-        p4 = p4/len(labels)
-        p4 = p4*np.log2(p4)
+        p4 = p4*p4/len(labels)*np.log2(p4/len(labels))
 
     return -(p1+p2+p3+p4)
 
 
 
 def remainder(Sleft,Sright):
-
-
     return (len(Sleft)/(len(Sleft)+len(Sright)) * H(Sleft)) + (len(Sright)/(len(Sleft)+len(Sright)) * H(Sright))
 
 
