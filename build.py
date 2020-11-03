@@ -18,9 +18,9 @@ def decision_tree_learning(ds, depth,leafCount):
 
             for row in ds:
                 if(row[i] > n):
-                    left_ds = np.vstack([left_ds,row])
-                else:
                     right_ds = np.vstack([right_ds,row])
+                else:
+                    left_ds = np.vstack([left_ds,row])
 
             print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
 
