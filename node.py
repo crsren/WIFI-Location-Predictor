@@ -1,4 +1,6 @@
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
+
+from evaluate import predict
 
 node=dict(boxstyle="square",fc="w")
 connection=dict(arrowstyle="-")
@@ -11,6 +13,7 @@ class Node:
         self.left = left
         self.right = right
         self.leaf = leaf
+        
 
     #function to draw tree from this node recursively
     #def plot(self, width, depth):
