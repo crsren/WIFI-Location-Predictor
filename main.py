@@ -16,7 +16,7 @@ class Node:
         self.leafornot = leafornot
 
 
-def decision_tree_learning(ds, depth):
+def decision_tree_learning(ds, depth,leafCount):
 
     left_ds = np.empty(shape=[0, 8])
     right_ds = np.empty(shape=[0, 8])
@@ -41,14 +41,15 @@ def decision_tree_learning(ds, depth):
 
             # recursion
             if(left_ds.size != 0): 
-                lChild, lDepth = decision_tree_learning(left_ds, depth+1)
+                lChild, lDepth, leafCount = decision_tree_learning(left_ds, depth+1,leafCount)
             if(right_ds.size != 0): 
-                rChild, rDepth = decision_tree_learning(right_ds, depth+1)
+                rChild, rDepth, leafCount = decision_tree_learning(right_ds, depth+1,leafCount)
             node = Node(i, n, lChild, rChild, False) # new node
-            return  (node, max(lDepth, rDepth)) # return decision node
+            return node, max(lDepth, rDepth), leafCount # return decision node
 
-    print("Leaf:", firstLabel, depth, len(ds))
-    return (Node(7, firstLabel, True), depth) # return leaf node
+    print("------ Leaf:", firstLabel, depth, len(ds))
+    leafCount += 1
+    return Node(7, firstLabel, True), depth, leafCount # return leaf node
 
 ###trained_tree_node = {'attribute', 'value', 'left', 'right', leafornot (bool)}
 # non leaf  -> Node(0, -87, Right, Left, False)
@@ -124,12 +125,13 @@ def remainder(Sleft,Sright):
 def main():
 
     clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
-    root, depth = decision_tree_learning(clean_ds, 0)
-    print(depth)
+    root, depth, leafCount = decision_tree_learning(clean_ds, 0,0)
+    print("Depth ",depth)
+    print("leafCount ",leafCount)
 
 
-    return
+    return root
 
 
-if __name__ == '__main__':
-        main()
+# if __name__ == '__main__':
+#         main()
