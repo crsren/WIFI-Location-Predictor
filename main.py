@@ -1,14 +1,13 @@
 import numpy as np
-import networkx
 
 clean_ds = np.loadtxt("wifi_db/clean_dataset.txt")
-#noisy_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
+noisy_ds = np.loadtxt("wifi_db/noisy_dataset.txt")
 np.set_printoptions(threshold=np.inf)
 
 
 class Node:
 
-    def __init__ (self,  attribute, value=-1, left=None, right=None, leafornot=False):
+    def __init__ (self,  attribute, value, left=None, right=None, leafornot=True):
         self.attribute = attribute
         self.value = value
         self.left = left
@@ -26,9 +25,9 @@ def decision_tree_learning(ds, depth,leafCount):
     for currentLabel in ds:
         if(currentLabel[7] != firstLabel):
             #find_split → attribute index "i", decision value "n"
-            c = find_split(ds)
-            i = c[0]
-            n = c[1]
+            i,n = find_split(ds)
+            # i = c[0]
+            # n = c[1]
             print ("Split on ", i, " by ", n)
 
             for row in ds:
@@ -44,12 +43,12 @@ def decision_tree_learning(ds, depth,leafCount):
                 lChild, lDepth, leafCount = decision_tree_learning(left_ds, depth+1,leafCount)
             if(right_ds.size != 0): 
                 rChild, rDepth, leafCount = decision_tree_learning(right_ds, depth+1,leafCount)
-            node = Node(i, n, lChild, rChild, False) # new node
+            node = Node(i, n, lChild, rChild,False) # new node
             return node, max(lDepth, rDepth), leafCount # return decision node
 
     print("------ Leaf:", firstLabel, depth, len(ds))
     leafCount += 1
-    return Node(7, firstLabel, True), depth, leafCount # return leaf node
+    return Node(7,firstLabel), depth, leafCount # return leaf node
 
 ###trained_tree_node = {'attribute', 'value', 'left', 'right', leafornot (bool)}
 # non leaf  -> Node(0, -87, Right, Left, False)
@@ -71,8 +70,8 @@ def find_split(ds):
         rooms = ds[:,7]
     
     
-        for j in range (int(min(col)), int(max(col))):
-            for k in range(0,2000):
+        for j in np.unique(col):
+            for k in range(0,len(col)):
                 if(col[k]>j):
                     Sleft = rooms[:k]
                     Sright = rooms[k:]
@@ -83,12 +82,13 @@ def find_split(ds):
  
             if(gain>mx):
                 mx=gain
-                split_point=[i,j]
+                attribute = i
+                val = j
 
 
     ds=ds[ds[:,0].argsort()]
 
-    return (split_point)
+    return attribute, val
 
 def info_gain(S,Sleft,Sright):
     return H(S) - remainder(Sleft,Sright)
@@ -133,5 +133,6 @@ def main():
     return root
 
 
-# if __name__ == '__main__':
-#         main()
+
+if __name__ == '__main__':
+        main()
