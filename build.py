@@ -3,7 +3,7 @@ import numpy as np
 
 from node import Node
 
-def decision_tree_learning(ds, depth,leafCount):
+def decision_tree_learning(ds, depth=0,leafCount=0):
 
     left_ds = np.empty(shape=[0, 8])
     right_ds = np.empty(shape=[0, 8])
