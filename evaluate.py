@@ -41,13 +41,14 @@ def confusionMatrix(ds, tree):
 
 
 def crossValidate(ds, k=10):
+    np.random.shuffle(ds) #just in case this hasn't been done before
     folds = np.split(ds,k)
     accuracy = 0
 
     for i in range (0,k):
         #use i as test set and !i as training set
         testSet = folds[i]
-        trainingSet = np.merge(folds[j] for j in range(0,k) if j != i)
+        trainingSet = np.concatenate(list(folds[j] for j in range(0,k) if j != i))
 
         root, depth, leafCount = decision_tree_learning(trainingSet)
 
