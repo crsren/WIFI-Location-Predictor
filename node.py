@@ -1,6 +1,6 @@
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 
-from evaluate import predict
+#from evaluate import predict
 
 node=dict(boxstyle="square",fc="w")
 connection=dict(arrowstyle="-")
