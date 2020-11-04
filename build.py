@@ -30,17 +30,18 @@ def decision_tree_learning(ds, depth=0,leafCount=0):
             if(right_ds.size != 0): 
                 rChild, rDepth, leafCount = decision_tree_learning(right_ds, depth+1,leafCount)
 
-            return Node(i, n, lChild, rChild,False), max(lDepth, rDepth), leafCount # return decision node
+            return Node(i, n, ds, lChild, rChild,False), max(lDepth, rDepth), leafCount # return decision node
 
     print("------ Leaf:", firstLabel, depth, len(ds))
     leafCount += 1
-    return Node(7,firstLabel), depth, leafCount # return leaf node
+    return Node(7,firstLabel,ds), depth, leafCount # return leaf node
 
 
 def find_split(ds):
 
-    # info_gain(ds[:,i])
     mx=0.0
+    # Sleft = np.empty(shape=[0, 1])
+    # Sright = np.empty(shape=[0, 1])
     
     for i in range(0,7):
         ds=ds[ds[:,i].argsort()]

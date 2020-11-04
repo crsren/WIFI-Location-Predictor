@@ -3,17 +3,16 @@ from evaluate import *
 
 def prune(node, depth):
 
-    if (!node.right.leafornot):
+    if (not node.right.leafornot):
         prune(node.right)
-    else if (!node.left.leafornot):
         prune(node.left)
     else:
         print(node)
 
-        if(node.left.ds.size() > node.right.ds.size()):
-            node.value = node.left.value
-        else:
-            node.value = node.right.value
+    if(len(node.left.ds) > len(node.right.ds)):
+        node.value = node.left.value
+    else:
+        node.value = node.right.value
 
         node.left = None
         node.right = None
