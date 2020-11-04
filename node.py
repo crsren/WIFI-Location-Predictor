@@ -7,13 +7,14 @@ connection=dict(arrowstyle="-")
 
 class Node:
 
-    def __init__ (self,  attribute, value, left=None, right=None, leaf=True):
+    def __init__ (self,  attribute, value, dataset, left=None, right=None, leaf=True):
         self.attribute = attribute
         self.value = value
         self.left = left
         self.right = right
         self.leaf = leaf
-        
+        self.dataset = dataset
+
 
     #function to draw tree from this node recursively
     #def plot(self, width, depth):
@@ -21,5 +22,5 @@ class Node:
         # a.clf()
         #draw this node
         #if not a leaf node, draw connections to child nodes
-        # left.plot() 
+        # left.plot()
         # right.plot()

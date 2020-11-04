@@ -1,16 +1,9 @@
 import numpy as np
+import node as Node
 
 import main
 
 
-class Node:
-
-    def __init__ (self,  attribute, value=-1, left=None, right=None, leafornot=False):
-        self.attribute = attribute
-        self.value = value
-        self.left = left
-        self.right = right
-        self.leafornot = leafornot
 
 
 def decision_tree_learning(ds, depth):
@@ -33,10 +26,10 @@ def decision_tree_learning(ds, depth):
             # recursion
             lChild, lDepth = decision_tree_learning(left_ds, depth+1)
             rChild, rDepth = decision_tree_learning(right_ds, depth+1)
-            node = Node(i, n, lChild, rChild, False) #new node
+            node = Node(i, n, ds, lChild, rChild, False) #new node
             return  (node, max(lDepth, rDepth)) # return decision node
 
-    return (Node(7, firstLabel, True), depth) # return leaf node
+    return (Node(7, firstLabel, ds, None, None, True), depth) # return leaf node
 
 
 
