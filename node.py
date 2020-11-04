@@ -15,6 +15,13 @@ class Node:
         self.leaf = leaf
         self.dataset = dataset
 
+    def tree_copy():
+        if(self.left != None):
+            left = self.left.tree_copy()
+        if(self.right != None):
+            right = self.right.tree_copy()
+        return Node(attribute, value, dataset, left, right)
+
 
     #function to draw tree from this node recursively
     #def plot(self, width, depth):

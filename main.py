@@ -4,10 +4,11 @@ from node import Node
 # from build import decision_tree_learning
 #from prune import
 from evaluate import *
+from prune import *
 
 def loadClean():
     return np.loadtxt("wifi_db/clean_dataset.txt")
-    
+
 def loadNoisy():
     return np.loadtxt("wifi_db/noisy_dataset.txt")
 
@@ -33,6 +34,7 @@ def main():
 
     #avgAccuracy = crossValidate(clean_ds)
     #print("average accuracy: ", avgAccuracy)
+    prune(root)
 
     return
 
