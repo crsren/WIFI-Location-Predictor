@@ -18,10 +18,14 @@ def main():
     np.random.shuffle(ds)
     folds = np.split(ds,10)
     testSet = folds[0]
+    print(len(testSet))
     print(folds[0])
     trainingSet = np.concatenate(folds[1:])
+    print(trainingSet[1800:])
+    print("––––––––––––––––––––––––––––––––––")
+    print(ds[:1800])
 
-    root, depth, leafCount = decision_tree_learning(trainingSet)
+    root, depth, leafCount = decision_tree_learning(ds[:1800])
     # print("––––––––––––––––––––––––––––––––––––––––")
     # accuracy = evaluate(testSet,root)
     # print(accuracy)

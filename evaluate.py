@@ -39,9 +39,12 @@ def confusionMatrix(ds, tree):
     
     return confusion
 
+#def plotCM(cm):
+    #TODO
+
 
 def crossValidate(ds, k=10):
-    np.random.shuffle(ds) #just in case this hasn't been done before
+    np.random.shuffle(ds) # just in case this hasn't been done before
     folds = np.split(ds,k)
     accuracy = 0
 
