@@ -7,24 +7,23 @@ from build import decision_tree_learning
 def predict(node, signals):
 
     if(node.leaf):
-        print("Leaf:", node.value)
         return node.value
-
     
     if(signals[node.attribute] > node.value):
         # print(node.attribute,": ", signals[node.attribute], " > ", node.value)
-        predict(node.right, signals)
+        return predict(node.right, signals)
     else:
         # print(node.attribute,": ", signals[node.attribute], " < ", node.value)
-        predict(node.left, signals)
+        return predict(node.left, signals)
 
 # return accuracy
 def evaluate(ds, tree):
     correct = 0
 
     for dp in ds:
-        print("Actual: ", ds[7], " | Predicted: ", predict(tree,dp))
-        if(predict(tree, dp) == ds[7]):
+        print(dp)
+        print("Actual: ", dp[7], " | Predicted: ", predict(tree,dp))
+        if(predict(tree, dp) == dp[7]):
             correct+=1
     
     return correct / len(ds)

@@ -55,8 +55,12 @@ def find_split(ds):
                     Sleft = rooms[:k]
                     Sright = rooms[k:]
                     break
-
-            gain = info_gain(ds[:,7],Sleft, Sright)
+            try:
+                gain = info_gain(ds[:,7],Sleft, Sright)
+            except:
+                print(ds[:,7])
+                print("SL: ", Sleft)
+                print("SR: ", Sright)
             if(gain>mx):
                 mx=gain
                 attribute = i
