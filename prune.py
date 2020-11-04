@@ -15,6 +15,10 @@ def prune(node, depth):
         else:
             node.value = node.right.value
 
+        node.left = None
+        node.right = None
+
         #remove node (turn into leaf with side of higher number samples)
         #test new tree on validation set_printoption
+        #use tree class
         #britney bitch
