@@ -48,19 +48,18 @@ def find_split(ds):
         col = ds[:,i]
         rooms = ds[:,7]
 
-
-        for j in np.unique(col):
+        uniqueCol = np.unique(col)
+        if(len(uniqueCol)== 1):
+            continue
+        for j in uniqueCol:
             for k in range(0,len(col)):
                 if(col[k]>j):
                     Sleft = rooms[:k]
                     Sright = rooms[k:]
                     break
-            try:
-                gain = info_gain(ds[:,7],Sleft, Sright)
-            except:
-                print(ds[:,7])
-                print("SL: ", Sleft)
-                print("SR: ", Sright)
+            
+            gain = info_gain(ds[:,7],Sleft, Sright)
+
             if(gain>mx):
                 mx=gain
                 attribute = i

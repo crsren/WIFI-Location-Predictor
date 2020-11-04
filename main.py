@@ -13,10 +13,11 @@ def loadNoisy():
     return np.loadtxt("wifi_db/noisy_dataset.txt")
 
 def main():
-    np.random.seed(10)
+    np.random.seed(100)
     #np.set_printoptions(threshold=np.inf)
     ds = loadClean()
     np.random.shuffle(ds)
+
     folds = np.split(ds,10)
     testSet = folds[0]
     #print(len(testSet))
@@ -26,14 +27,14 @@ def main():
     print("––––––––––––––––––––––––––––––––––")
     print(ds[1990:])
 
-    root, depth, leafCount = decision_tree_learning(ds[200:])
+    root, depth, leafCount = decision_tree_learning(trainingSet)
 
     print("––––––––––––––––––––––––––––––––––––––––")
     accuracy = evaluate(testSet,root)
     print(accuracy)
 
-    #avgAccuracy = crossValidate(clean_ds)
-    #print("average accuracy: ", avgAccuracy)
+    avgAccuracy = crossValidate(ds)
+    print("average accuracy: ", avgAccuracy)
     prune(root)
 
     return
