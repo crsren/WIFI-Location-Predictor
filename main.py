@@ -51,39 +51,40 @@ def loadNoisy():
 def main():
     np.random.seed(100)
     # np.set_printoptions(threshold=np.inf)
-    ds = loadNoisy()
+    ds = loadClean()
     np.random.shuffle(ds)
+    confusionAvg = crossValidate_confusion(ds)
 
-    folds = np.split(ds, 2)
-    testSet = folds[0]
-    # print(len(testSet))
-    # print(folds[0])
-    #trainingSet = np.concatenate(folds[1:])
-    trainingSet = folds[1]
-    print(testSet)
-    print("––––––––––––––––––")
-    print(trainingSet)
+    # folds = np.split(ds, 2)
+    # testSet = folds[0]
+    # # print(len(testSet))
+    # # print(folds[0])
+    # #trainingSet = np.concatenate(folds[1:])
+    # trainingSet = folds[1]
+    # print(testSet)
+    # print("––––––––––––––––––")
+    # print(trainingSet)
 
-    root, depth, leafCount = decision_tree_learning(trainingSet)
+    #root, depth, leafCount = decision_tree_learning(trainingSet)
 
-    print(evaluate(testSet, root))
+    #print(evaluate(testSet, root))
 
-    print("Pruning!")
-    # Split into actual validation set later!!!
-    root.perfectlyPruned(testSet, root)
+    # print("Pruning!")
+    # # Split into actual validation set later!!!
+    # root.perfectlyPruned(testSet, root)
 
     # avgAccuracy = crossValidate(ds)
     # print("average accuracy: ", avgAccuracy)
     #prune(root, testSet)
 
-    fig, ax = plt.subplots(figsize=(18, 10))
-    gap = 1.0/depth
-    plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
-    fig.subplots_adjust(top=0.98)
-    fig.subplots_adjust(bottom=0.03)
-    fig.subplots_adjust(left=0.03)
-    fig.subplots_adjust(right=0.99)
-    plt.show()
+    # fig, ax = plt.subplots(figsize=(18, 10))
+    # gap = 1.0/depth
+    # plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
+    # fig.subplots_adjust(top=0.98)
+    # fig.subplots_adjust(bottom=0.03)
+    # fig.subplots_adjust(left=0.03)
+    # fig.subplots_adjust(right=0.99)
+    # plt.show()
 
     return root, testSet
 
