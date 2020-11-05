@@ -40,6 +40,32 @@ def confusionMatrix(ds, tree):  # returns confusion matrix
 # def plotCM(cm):
     # TODO
 
+def precisionmatrix(matrix): #return an array of precision for each room, takes in a cunfussion matrix
+    precision = np.zeros(4)
+    for i in range(0,4):
+        tp = matrix[i][i]
+        fp = matrix[i][0] + matrix[i][1] + matrix[i][2] + matrix[i][3]
+        precision[i] = tp/(fp)
+
+    return precision
+
+def recallmatrix(matrix): #return an array of recalls for each room takes in a cunfussion matrix
+
+    recall = np.zeros(4)
+    for i in range(0,4):
+        tp = matrix[i][i]
+        fn = matrix[0][i] + matrix[1][i] + matrix[2][i] + matrix[3][i]
+        recall[i] = tp/(fn)
+
+    return recall
+
+def f1score(recall, precision): #takes in recall and precision array for each room and returns f1scores for each room
+    f1score = np.zeros(4)
+    for i in range(0,4):
+        f1score[i] = 2*((precision[i] * recall[i])/(precision[i] + recall[i]))
+
+    return f1score
+
 
 def crossValidate(ds, k=10):
     np.random.shuffle(ds)  # just in case this hasn't been done before
