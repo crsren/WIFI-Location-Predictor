@@ -52,7 +52,7 @@ def main():
 
     fig, ax = plt.subplots(figsize=(18, 10))
     tree, depth, leafCount = decision_tree_learning(trainingSet)
-    prune(tree, testSet)
+    prune(tree, tree, testSet)
     gap = 1.0/depth
     plot_graph(tree, 0.0, 1.0, 0.0, 1.0, gap, ax)
     fig.subplots_adjust(top=0.98)

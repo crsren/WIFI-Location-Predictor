@@ -8,15 +8,15 @@ from build import *
 #save_tree = root.tree_copy()
 #prunes = []
 
-def prune(node, test_data):
 
-    pre_accuracy = evaluate(test_data, node)
+def prune(root, node, test_data):
 
     if (node.left.leaf is False):
-        prune(node.left, test_data)
+        return prune(root, node.left, test_data)
     elif (node.right.leaf is False):
-        prune(node.right, test_data)
+        return prune(root, node.right, test_data)
     else:
+        pre_accuracy = evaluate(test_data, root)
         tempNode = copy.deepcopy(node)
         # tempNode = Node(node.attribute, node.value, node.left, node.right, node.leaf, node.dataset)
         # tmp.attribute = node.attribute
@@ -31,18 +31,18 @@ def prune(node, test_data):
             node.attribute = node.left.attribute
         else:
             node.value = node.right.value
-            node.attribute = node.left.attribute
+            node.attribute = node.right.attribute
 
         node.left = None
         node.right = None
         node.leaf = True
 
-        post_accuracy = evaluate(test_data, node)
+        post_accuracy = evaluate(test_data, root)
 
         if(post_accuracy >= pre_accuracy):
             #keep prune
             print("keep prune")
-            return node
+            return
         else:
             #restore leaves - need stack to store prunes prior to accuracy check?
             print("restore leaves")
@@ -52,7 +52,7 @@ def prune(node, test_data):
             node.right = tempNode.right
             node.leaf = tempNode.leaf
             node.dataset = tempNode.dataset
-            return node
+            return
 
 
         #remove node (turn into leaf with side of higher number samples)
