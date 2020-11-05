@@ -29,14 +29,14 @@ class Node:
         # try pruning every node from the bottom up
         # if smartPrune returned false, no pruning above this one needs to be attempted
         if(self.left):
-            prunedLeft = perfectlyPruned(self.left)
+            prunedLeft = self.left.perfectlyPruned(valset)
         if(self.right):
-            prunedRight = perfectlyPruned(self.right)
+            prunedRight = self.left.perfectlyPruned(valset)
 
         if(prunedLeft and prunedRight):
-            return smartPrune(self, valset, root)
+            return self.smartPrune(valset, root)
         else:
-            return False #One child 
+            return False  # One child
 
     # returns True if pruning resulted in a more accuracte result, wherefore pruning was carried out
     # return False if the pruned tree was less accurate, wherefore the pruned was reversed

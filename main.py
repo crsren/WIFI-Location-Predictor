@@ -32,10 +32,7 @@ def main():
     root, depth, leafCount = decision_tree_learning(trainingSet)
 
     print("Pruning!")
-    root.left.left.smartPrune(testSet, root)
-    print("––––––––––––––––––––––––––––––––––––––––")
-    accuracy = evaluate(testSet, root)
-    print(accuracy)
+    root.perfectlyPruned(testSet)  # Split into actual validation set later!!!
 
     return root, testSet
 
