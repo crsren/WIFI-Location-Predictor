@@ -31,11 +31,12 @@ def main():
 
     root, depth, leafCount = decision_tree_learning(trainingSet)
 
+    print("Pruning!")
+    root.left.left.smartPrune(testSet, root)
     print("––––––––––––––––––––––––––––––––––––––––")
     accuracy = evaluate(testSet, root)
     print(accuracy)
 
-    print("Pruning!")
     return root, testSet
 
     # avgAccuracy = crossValidate(ds)

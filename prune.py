@@ -1,12 +1,6 @@
-import numpy as np
-from __init__ import *
+# import numpy as np
+# from __init__ import *
 
-
-def perfectlyPruned(root, valset):
-    # try pruning every node from the bottom up
-    # if smartPrune returned false, no pruning above this one needs to be attempted
-
-    return root
 
 #save_tree = root.tree_copy()
 #prunes = []

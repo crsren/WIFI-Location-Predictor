@@ -25,28 +25,43 @@ class Node:
     #         right = self.right.tree_copy()
     #     return Node(attribute, value, dataset, left, right)
 
+    def perfectlyPruned(self, valset):
+        # try pruning every node from the bottom up
+        # if smartPrune returned false, no pruning above this one needs to be attempted
+        if(self.left):
+            prunedLeft = perfectlyPruned(self.left)
+        if(self.right):
+            prunedRight = perfectlyPruned(self.right)
+
+        if(prunedLeft and prunedRight):
+            return smartPrune(self, valset, root)
+        else:
+            return False #One child 
+
     # returns True if pruning resulted in a more accuracte result, wherefore pruning was carried out
     # return False if the pruned tree was less accurate, wherefore the pruned was reversed
-    def smartPrune(self, valse):
+    def smartPrune(self, valset, root):
         if(self.leaf):
             return True  # nothing to prune
         else:
             # WE MIGHT WANNA USE CROSS VALIDATE INSTEAD
-            pre_accuracy = evaluate(valset, self)
+            pre_accuracy = evaluate(valset, root)
 
             intLabels = self.dataset[:, 7].astype(np.int)
             self.leaf = np.argmax(np.bincount(intLabels))
 
             # WE MIGHT WANNA USE CROSS VALIDATE INSTEAD
-            post_accuracy = evaluate(valset, self)
+            post_accuracy = evaluate(valset, root)
 
             print("pre: ", pre_accuracy, "post: ", post_accuracy)
 
             # prune even if same accuracy since more efficient → >=
             if(post_accuracy >= pre_accuracy):
+                print("Pruned ", self)
                 return True
             else:
                 self.leaf = 0
+                print("Didn't prune ", self)
                 return False
 
     # function to draw tree from this node recursively
