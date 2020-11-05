@@ -25,15 +25,21 @@ class Node:
     #         right = self.right.tree_copy()
     #     return Node(attribute, value, dataset, left, right)
 
-    def perfectlyPruned(self, valset):
+    def perfectlyPruned(self, valset, root):
         # try pruning every node from the bottom up
         # if smartPrune returned false, no pruning above this one needs to be attempted
+        if(self.leaf):
+            return True  # nothing to prune
+
         if(self.left != None):
-            leftIsLeaf = self.left.perfectlyPruned(valset)
+            # prune left subtree as much as possible
+            leftIsLeaf = self.left.perfectlyPruned(valset, root)
         if(self.right != None):
-            rightIsLeaf = self.left.perfectlyPruned(valset)
+            # prune right subtree as much as possible
+            rightIsLeaf = self.left.perfectlyPruned(valset, root)
 
         if(leftIsLeaf and rightIsLeaf):
+            # both children had been turned into leaf nodes, try if pruning this one
             return self.smartPrune(valset, root)
         else:
             return False  # At least one child wasn't pruned
@@ -42,7 +48,8 @@ class Node:
     # return False if the pruned tree was less accurate, wherefore the pruned was reversed
     def smartPrune(self, valset, root):
         if(self.leaf):
-            return True  # nothing to prune
+            # nothing to prune (in case called outside of perfectly pruned)
+            return True
         else:
             # WE MIGHT WANNA USE CROSS VALIDATE INSTEAD
             pre_accuracy = evaluate(valset, root)
@@ -57,11 +64,11 @@ class Node:
 
             # prune even if same accuracy since more efficient → >=
             if(post_accuracy >= pre_accuracy):
-                print("Pruned ", self)
+                print("Pruned ", len(self.dataset))
                 return True
             else:
                 self.leaf = 0
-                print("Didn't prune ", self)
+                print("Didn't prune ", len(self.dataset))
                 return False
 
     # function to draw tree from this node recursively

@@ -19,8 +19,8 @@ def evaluate(ds, tree):  # return accuracy
     correct = 0
 
     for dp in ds:
-        print(dp)
-        print("Actual: ", dp[7], " | Predicted: ", predict(tree, dp))
+        # print(dp)
+        # print("Actual: ", dp[7], " | Predicted: ", predict(tree, dp))
         if(predict(tree, dp) == dp[7]):
             correct += 1
 

@@ -20,19 +20,26 @@ def loadNoisy():
 def main():
     np.random.seed(100)
     # np.set_printoptions(threshold=np.inf)
-    ds = loadClean()
+    ds = loadNoisy()
     np.random.shuffle(ds)
 
-    folds = np.split(ds, 10)
+    folds = np.split(ds, 2)
     testSet = folds[0]
     # print(len(testSet))
     # print(folds[0])
-    trainingSet = np.concatenate(folds[1:])
+    #trainingSet = np.concatenate(folds[1:])
+    trainingSet = folds[1]
+    print(testSet)
+    print("––––––––––––––––––")
+    print(trainingSet)
 
     root, depth, leafCount = decision_tree_learning(trainingSet)
 
+    print(evaluate(testSet, root))
+
     print("Pruning!")
-    root.perfectlyPruned(testSet)  # Split into actual validation set later!!!
+    # Split into actual validation set later!!!
+    root.perfectlyPruned(testSet, root)
 
     return root, testSet
 
