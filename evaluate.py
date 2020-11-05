@@ -101,7 +101,7 @@ def crossValidate_confusion(ds, k=10):
         root, depth, leafCount = decision_tree_learning(trainingSet)
 
         confusion = confusionMatrix(testSet, root)
-        print("i:", confusion)
+        print(i, ": ", confusion)
         np.add(confusionTotal, confusion)
 
         confusionTotal = confusionTotal/float(k)

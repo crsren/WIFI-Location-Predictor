@@ -6,6 +6,7 @@ import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 from collections import deque
 
+
 def decision_tree_learning(ds, depth=0, leafCount=0):
 
     left_ds = np.empty(shape=[0, 8])
@@ -25,7 +26,7 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
                 else:
                     left_ds = np.vstack([left_ds, row])
 
-            print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
+            #print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
 
             # recursion
             if(left_ds.size != 0):
@@ -38,7 +39,7 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
             # return decision node
             return Node(i, n, ds, 0, lChild, rChild), max(lDepth, rDepth), leafCount
 
-    print("------ Leaf:", firstLabel, depth, len(ds))
+    #print("------ Leaf:", firstLabel, depth, len(ds))
     leafCount += 1
     # return leaf node
     return Node(7, None, ds, firstLabel), depth, leafCount
@@ -106,6 +107,7 @@ def H(labels):
 
 def remainder(Sleft, Sright):
     return (len(Sleft)/(len(Sleft)+len(Sright)) * H(Sleft)) + (len(Sright)/(len(Sleft)+len(Sright)) * H(Sright))
+
 
 #from matplotlib import pyplot as plt
 node = dict(boxstyle="square", fc="w")
@@ -223,28 +225,33 @@ def confusionMatrix(ds, tree):  # returns confusion matrix
 # def plotCM(cm):
     # TODO
 
-def precisionmatrix(matrix): #return an array of precision for each room, takes in a cunfussion matrix
+
+# return an array of precision for each room, takes in a cunfussion matrix
+def precisionmatrix(matrix):
     precision = np.zeros(4)
-    for i in range(0,4):
+    for i in range(0, 4):
         tp = matrix[i][i]
         fp = matrix[i][0] + matrix[i][1] + matrix[i][2] + matrix[i][3]
         precision[i] = tp/(fp)
 
     return precision
 
-def recallmatrix(matrix): #return an array of recalls for each room takes in a cunfussion matrix
+
+def recallmatrix(matrix):  # return an array of recalls for each room takes in a cunfussion matrix
 
     recall = np.zeros(4)
-    for i in range(0,4):
+    for i in range(0, 4):
         tp = matrix[i][i]
         fn = matrix[0][i] + matrix[1][i] + matrix[2][i] + matrix[3][i]
         recall[i] = tp/(fn)
 
     return recall
 
-def f1score(recall, precision): #takes in recall and precision array for each room and returns f1scores for each room
+
+# takes in recall and precision array for each room and returns f1scores for each room
+def f1score(recall, precision):
     f1score = np.zeros(4)
-    for i in range(0,4):
+    for i in range(0, 4):
         f1score[i] = 2*((precision[i] * recall[i])/(precision[i] + recall[i]))
 
     return f1score
@@ -273,7 +280,7 @@ def crossValidate(ds, k=10):
 def crossValidate_confusion(ds, k=10):
     np.random.shuffle(ds)  # just in case this hasn't been done before
     folds = np.split(ds, k)
-    confusion = np.zeros((4, 4))
+    confusionTotal = np.zeros((4, 4))
 
     for i in range(0, k):
         # use i as test set and !i as training set
@@ -284,12 +291,13 @@ def crossValidate_confusion(ds, k=10):
         root, depth, leafCount = decision_tree_learning(trainingSet)
 
         confusion = confusionMatrix(testSet, root)
-        print("i:", confusion)
-        np.add(confusionTotal, confusion)
+        print(i, ":", confusion)
+        confusionTotal = np.add(confusionTotal, confusion)
 
         confusionTotal = confusionTotal/float(k)
         print("Average: ", confusionTotal)
     return confusionTotal
+
 
 def plot_graph(root, xmin, xmax, ymin, ymax, gap, ax):
     queue = deque([(root, xmin, xmax, ymin, ymax)])
@@ -368,7 +376,7 @@ def main():
     # fig.subplots_adjust(right=0.99)
     # plt.show()
 
-    return root, testSet
+    return  # root, testSet
 
 
 if __name__ == '__main__':
