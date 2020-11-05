@@ -1,7 +1,6 @@
 import numpy as np
-from __init__ import *
-from build import decision_tree_learning
-
+from node import *
+from build import *
 
 def predict(node, signals):  # function to predict
 

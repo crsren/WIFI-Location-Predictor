@@ -1,5 +1,7 @@
 import numpy as np
-from __init__ import *
+from node import *
+from build import *
+from evaluate import *
 
 import matplotlib.pyplot as plt
 import matplotlib.path as mpath
