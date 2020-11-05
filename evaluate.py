@@ -28,11 +28,12 @@ def evaluate(ds, tree):  # return accuracy
 
 
 def confusionMatrix(ds, tree):  # returns confusion matrix
-    confusion = np.zeros([4][4])  # actual, predicted
+    confusion = np.zeros((4,4))  # actual, predicted
 
     for dp in ds:
-        print("(CM) Actual: ", ds[7], " | Predicted: ", predict(tree, dp))
-        confusion[ds[7]][predict(tree, dp)] += 1
+        predicted = predict(tree, dp)
+        #print("(CM) Actual: ", int(dp[7]), " | Predicted: ", predicted)
+        confusion[int(dp[7])-1][int(predicted)-1] += 1
 
     return confusion
 
