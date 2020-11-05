@@ -1,5 +1,6 @@
 import numpy as np
 from __init__ import *
+from build import decision_tree_learning
 
 
 def predict(node, signals):  # function to predict
@@ -28,7 +29,7 @@ def evaluate(ds, tree):  # return accuracy
 
 
 def confusionMatrix(ds, tree):  # returns confusion matrix
-    confusion = np.zeros((4,4))  # actual, predicted
+    confusion = np.zeros((4, 4))  # actual, predicted
 
     for dp in ds:
         predicted = predict(tree, dp)
@@ -56,6 +57,28 @@ def crossValidate(ds, k=10):
 
         accuracy += evaluate(testSet, root)
 
-    return accuracy/k
+    return accuracy/float(k)
 
     #training_ds= ds[:n,:]
+
+
+def crossValidate_confusion(ds, k=10):
+    np.random.shuffle(ds)  # just in case this hasn't been done before
+    folds = np.split(ds, k)
+    confusion = np.zeros((4, 4))
+
+    for i in range(0, k):
+        # use i as test set and !i as training set
+        testSet = folds[i]
+        trainingSet = np.concatenate(
+            list(folds[j] for j in range(0, k) if j != i))
+
+        root, depth, leafCount = decision_tree_learning(trainingSet)
+
+        confusion = confusionMatrix(testSet, root)
+        print("i:", confusion)
+        np.add(confusionTotal, confusion)
+
+        confusionTotal = confusionTotal/float(k)
+        print("Average: ", confusionTotal)
+    return confusionTotal
