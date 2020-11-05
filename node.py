@@ -28,15 +28,15 @@ class Node:
     def perfectlyPruned(self, valset):
         # try pruning every node from the bottom up
         # if smartPrune returned false, no pruning above this one needs to be attempted
-        if(self.left):
-            prunedLeft = self.left.perfectlyPruned(valset)
-        if(self.right):
-            prunedRight = self.left.perfectlyPruned(valset)
+        if(self.left != None):
+            leftIsLeaf = self.left.perfectlyPruned(valset)
+        if(self.right != None):
+            rightIsLeaf = self.left.perfectlyPruned(valset)
 
-        if(prunedLeft and prunedRight):
+        if(leftIsLeaf and rightIsLeaf):
             return self.smartPrune(valset, root)
         else:
-            return False  # One child
+            return False  # At least one child wasn't pruned
 
     # returns True if pruning resulted in a more accuracte result, wherefore pruning was carried out
     # return False if the pruned tree was less accurate, wherefore the pruned was reversed
