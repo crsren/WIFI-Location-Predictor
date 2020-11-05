@@ -13,7 +13,7 @@ def prune(root, node, test_data):
 
     if (node.left.leaf is False):
         return prune(root, node.left, test_data)
-    elif (node.right.leaf is False):
+    if (node.right.leaf is False):
         return prune(root, node.right, test_data)
     else:
         pre_accuracy = evaluate(test_data, root)
