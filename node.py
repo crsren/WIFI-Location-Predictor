@@ -1,6 +1,6 @@
 import numpy as np
-from __init__ import *
 from evaluate import evaluate
+from node import *
 
 
 #from matplotlib import pyplot as plt

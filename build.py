@@ -1,6 +1,7 @@
-
 import numpy as np
-from __init__ import *
+from evaluate import *
+from node import *
+
 
 
 def decision_tree_learning(ds, depth=0, leafCount=0):

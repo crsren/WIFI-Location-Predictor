@@ -1,5 +1,7 @@
 import numpy as np
-from __init__ import *
+from node import *
+from build import *
+from evaluate import *
 
 import matplotlib.pyplot as plt
 import matplotlib.path as mpath
@@ -52,8 +54,9 @@ def loadNoisy():
 def main():
     np.random.seed(100)
     # np.set_printoptions(threshold=np.inf)
-    ds = loadNoisy()
+    ds = loadClean()
     np.random.shuffle(ds)
+
     lol = np.split(ds,40)
     mini_ds = lol[0]
 
@@ -67,9 +70,22 @@ def main():
     print("––––––––––––––––––")
     print(trainingSet)
 
-    root, depth, leafCount = decision_tree_learning(trainingSet)
+    confusionAvg = crossValidate_confusion(ds)
 
-    print(evaluate(testSet, root))
+    # folds = np.split(ds, 2)
+    # testSet = folds[0]
+    # # print(len(testSet))
+    # # print(folds[0])
+    # #trainingSet = np.concatenate(folds[1:])
+    # trainingSet = folds[1]
+    # print(testSet)
+    # print("––––––––––––––––––")
+    # print(trainingSet)
+
+
+    #root, depth, leafCount = decision_tree_learning(trainingSet)
+
+    #print(evaluate(testSet, root))
 
     print("Pruning!")
     # Split into actual validation set later!!!
