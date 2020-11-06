@@ -77,9 +77,9 @@ def main(argv):
     #print("Average: ", confusionAvg)
     np.random.shuffle(ds)
 
-    folds = np.split(ds, 10)
+    folds = np.split(mini_ds, 2)
     testSet = folds[0]
-    trainingSet = np.concatenate(folds[1:])
+    #trainingSet = np.concatenate(folds[1:])
     print(testSet)
 
     root, depth, leafCount = decision_tree_learning(trainingSet)
