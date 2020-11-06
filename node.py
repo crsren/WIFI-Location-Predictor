@@ -64,6 +64,9 @@ class Node:
             # prune even if same accuracy since more efficient → >=
             if(post_accuracy >= pre_accuracy):
                 print("Pruned ", len(self.dataset))
+                self.left = None
+                self.right = None
+                self.leaf = 1
                 return True
             else:
                 self.leaf = 0

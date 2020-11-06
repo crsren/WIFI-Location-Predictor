@@ -1,4 +1,4 @@
-from main2 import *
+from main import *
 
 
 def avgConfusionMatrix(ds=None):
