@@ -32,12 +32,13 @@ def main(argv):
     testSet = folds[0]
     trainingSet = np.concatenate(folds[1:])
 
+    print("Training the tree...")
     root, depth, leafCount = decision_tree_learning(trainingSet)
     pruned = False
-    root.draw(pruned)
+    # root.draw(pruned)
     root.perfectlyPruned(testSet, root)
     pruned = True
-    root.draw(pruned)
+    # root.draw(pruned)
 
     print("10 fold cross validated accuracy: ", crossValidate(ds))
 
@@ -46,7 +47,6 @@ def main(argv):
 
     print("confussion matrix non prunned: ", matrix)
     print("confussion matrix prunned: ", matrixprunned)
-
 
     return  # root, testSet
 
