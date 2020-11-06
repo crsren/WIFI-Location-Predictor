@@ -59,18 +59,15 @@ class Node:
 
             post_accuracy = evaluate(valset, root)
 
-            print("pre: ", pre_accuracy, "post: ", post_accuracy)
 
             # prune even if same accuracy since more efficient → >=
             if(post_accuracy >= pre_accuracy):
-                print("Pruned ", len(self.dataset))
                 self.left = None
                 self.right = None
                 self.leaf = 1
                 return True
             else:
                 self.leaf = 0
-                print("Didn't prune ", len(self.dataset))
                 return False
 
 
