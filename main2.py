@@ -350,6 +350,22 @@ def plot_graph(root, x1, x2, y1, y2, gap, ax):
             an1 = ax.annotate(node.leaf, xy=(center, y2), xycoords="data", va="bottom", ha="center",
                               bbox=dict(color="green", boxstyle="circle", fc="w"))
 
+def max_depth(node):
+    if node is None:
+        return 0 ;
+
+    else :
+
+        # Compute the depth of each subtree
+        lDepth = max_depth(node.left) 
+        rDepth = max_depth(node.right)
+
+        # Use the larger one
+        if (lDepth > rDepth):
+            return lDepth+1
+        else:
+            return rDepth+1
+
 
 def loadClean():
     return np.loadtxt("wifi_db/clean_dataset.txt")
@@ -390,6 +406,9 @@ def main():
     fig.subplots_adjust(right=0.99)
     plt.show()
 
+    md = max_depth(root)
+    print("unpruned depth:", md)
+
     #print(evaluate(testSet, root))
 
     print("Pruning!")
@@ -408,6 +427,9 @@ def main():
     fig.subplots_adjust(left=0.03)
     fig.subplots_adjust(right=0.99)
     plt.show()
+
+    md = max_depth(root)
+    print("pruned depth:", md)
 
     return  # root, testSet
 
