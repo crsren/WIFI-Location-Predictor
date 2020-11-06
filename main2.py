@@ -135,7 +135,7 @@ class Node:
     def perfectlyPruned(self, valset, root):
         # try pruning every node from the bottom up
         # if smartPrune returned false, no pruning above this one needs to be attempted
-        if(self.leaf):
+        if(self.leaf != 0):
             return True  # nothing to prune
 
         if(self.left != None):
@@ -309,6 +309,8 @@ def prunedCrossValidate_confusion(ds, k=10):
             list(folds[j] for j in range(0, k) if j != i))
 
         root, depth, leafCount = decision_tree_learning(trainingSet)
+        temp = confusionMatrix(testSet, root)
+
         root.perfectlyPruned(testSet, root)
 
         confusion = confusionMatrix(testSet, root)
@@ -331,7 +333,7 @@ def plot_graph(root, x1, x2, y1, y2, gap, ax):
         a = node.attribute
         v = node.value
         p = node.pruned
-        text = '['+str(a)+']@'+str(v)#+'->'+str(p)
+        text = '['+str(a)+']@'+str(v)  # +'->'+str(p)
 
         center = x1+(x2-x1)/2.0
         d = (center-x1)/2.0
@@ -377,12 +379,15 @@ def loadNoisy():
 
 def main():
     # np.set_printoptions(threshold=np.inf)
-    ds = loadClean()
-    np.random.shuffle(ds)
-    confusionAvg = prunedCrossValidate_confusion(ds)
+    clean_ds = loadClean()
+    noisy_ds = loadNoisy()
+    entire_ds = np.vstack((clean_ds, noisy_ds))
+    np.random.shuffle(entire_ds)
+    #confusionAvg = prunedCrossValidate_confusion(entire_ds)
+    confusionAvg = crossValidate_confusion(entire_ds)
     print("Average: ", confusionAvg)
 
-    lol = np.split(ds,40)
+    lol = np.split(ds, 40)
     mini_ds = lol[0]
 
     folds = np.split(mini_ds, 2)
