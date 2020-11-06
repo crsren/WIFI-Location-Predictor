@@ -95,40 +95,40 @@ class Node:
             return rDepth+1
 
 
-    def plot_graph(self, x1, x2, y1, y2, gap, ax):
+    def treeplot(self, x1, x2, y1, y2, space, ax):
         q1 = [(self, x1, x2, y1, y2)]
         while len(q1) > 0:
             q2 = q1.pop(0)
             node, x1, x2, y1, y2 = q2[0], q2[1], q2[2], q2[3], q2[4]
-            a, v, p = node.attribute, node.value, node.pruned
-            text = '['+str(a)+']@'+str(v)  # +'->'+str(p)
-            c = x1+(x2-x1)/2.0
-            d = (c-x1)/2.0
+            c = x1+((x2-x1)/2)
+            txt = str(node.attribute)+' @ '+str(node.value)  # +'->'+str(p)
+            d = (c-x1)/2
+            diff = y2-space
 
-            if node.left is not None:
-                q1.append((node.left, x1, c, y1, y2-gap))
-                ax.annotate(text, xy=(c-d, y2-gap),
+            if (node.left is not None):
+                q1.append((node.left, x1, c, y1, diff))
+                ax.annotate(txt, xy=(c-d, diff),
                             xytext=(c, y2), arrowprops=dict(arrowstyle="-"), bbox=dict(boxstyle="round", fc="w"))
 
-            if node.right is not None:
-                q1.append((node.right, c, x2, y1, y2-gap))
-                ax.annotate(text, xy=(c+d, y2-gap),
+            if (node.right is not None):
+                q1.append((node.right, c, x2, y1, diff))
+                ax.annotate(txt, xy=(c+d, diff),
                             xytext=(c, y2), arrowprops=dict(arrowstyle="-"), bbox=dict(boxstyle="round", fc="w"))
 
-            if node.left is None and node.right is None:
-                an1 = ax.annotate(node.leaf, xy=(c, y2), xycoords="data", va="bottom", ha="center",
+            if (node.left is None and node.right is None):
+                ax.annotate(node.leaf, xy=(c, y2), xycoords="data", va="bottom", ha="center",
                                   bbox=dict(color="green", boxstyle="circle", fc="w"))
 
     def draw(self, pruned):
         fig, ax = plt.subplots(figsize=(1000, 10))
         depth = self.max_depth()
-        gap = 1.0/depth
+        space = 1.0/depth
         plt.axis('off')
         if(pruned is True):
             plt.title("Pruned Tree, depth:"+str(depth), loc='left')
         else:
             plt.title("Unpruned Tree, depth:"+str(depth), loc='left')
-        self.plot_graph(0.0, 1.0, 0.0, 1.0, gap, ax)
+        self.treeplot(0.0, 1.0, 0.0, 1.0, space, ax)
         fig.subplots_adjust(top=0.95)
         fig.subplots_adjust(bottom=0.03)
         fig.subplots_adjust(left=0.03)
