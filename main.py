@@ -76,12 +76,11 @@ def main(argv):
     #confusionAvg = crossValidate_confusion(ds)
     #print("Average: ", confusionAvg)
     np.random.shuffle(ds)
-    lol = np.split(ds, 20)
-    mini_ds = lol[0]
 
     folds = np.split(ds, 10)
     testSet = folds[0]
-    trainingSet = folds[1:]
+    trainingSet = np.concatenate(folds[1:])
+    print(testSet)
 
     root, depth, leafCount = decision_tree_learning(trainingSet)
     pruned = False
