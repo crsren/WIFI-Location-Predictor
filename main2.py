@@ -134,15 +134,15 @@ class Node:
     def perfectlyPruned(self, valset, root):
         # try pruning every node from the bottom up
         # if smartPrune returned false, no pruning above this one needs to be attempted
-        if(self.leaf):
+        if(self.leaf != 0):
             return True  # nothing to prune
 
-        if(self.left != None):
+        # if(self.left != None):
             # prune left subtree as much as possible
-            leftIsLeaf = self.left.perfectlyPruned(valset, root)
-        if(self.right != None):
-            # prune right subtree as much as possible
-            rightIsLeaf = self.left.perfectlyPruned(valset, root)
+        leftIsLeaf = self.left.perfectlyPruned(valset, root)
+        # if(self.right != None):
+        # prune right subtree as much as possible
+        rightIsLeaf = self.right.perfectlyPruned(valset, root)
 
         if(leftIsLeaf and rightIsLeaf):
             # both children had been turned into leaf nodes, try if pruning this one optimzes the tree
@@ -308,6 +308,8 @@ def prunedCrossValidate_confusion(ds, k=10):
             list(folds[j] for j in range(0, k) if j != i))
 
         root, depth, leafCount = decision_tree_learning(trainingSet)
+        temp = confusionMatrix(testSet, root)
+
         root.perfectlyPruned(testSet, root)
 
         confusion = confusionMatrix(testSet, root)
@@ -357,11 +359,13 @@ def loadNoisy():
 
 
 def main():
-    np.random.seed(100)
     # np.set_printoptions(threshold=np.inf)
-    ds = loadClean()
-    np.random.shuffle(ds)
-    confusionAvg = prunedCrossValidate_confusion(ds)
+    clean_ds = loadClean()
+    noisy_ds = loadNoisy()
+    entire_ds = np.vstack((clean_ds, noisy_ds))
+    np.random.shuffle(entire_ds)
+    #confusionAvg = prunedCrossValidate_confusion(entire_ds)
+    confusionAvg = crossValidate_confusion(entire_ds)
     print("Average: ", confusionAvg)
 
     # folds = np.split(ds, 2)
