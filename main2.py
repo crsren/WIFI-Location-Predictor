@@ -18,7 +18,7 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
         if(currentLabel[7] != firstLabel):
             # find_split → attribute index "i", decision value "n"
             i, n = find_split(ds)
-            print("Split on ", i, " by ", n)
+            #print("Split on ", i, " by ", n)
 
             for row in ds:
                 if(row[i] > n):
@@ -272,7 +272,7 @@ def crossValidate(ds, k=10):
 
         accuracy += evaluate(testSet, root)
 
-    return accuracy/float(k)
+    return accuracy/k
 
     #training_ds= ds[:n,:]
 
@@ -294,9 +294,28 @@ def crossValidate_confusion(ds, k=10):
         print(i, ":", confusion)
         confusionTotal = np.add(confusionTotal, confusion)
 
-        confusionTotal = confusionTotal/float(k)
-        print("Average: ", confusionTotal)
-    return confusionTotal
+    return confusionTotal/k
+
+
+def prunedCrossValidate_confusion(ds, k=10):
+    np.random.shuffle(ds)  # just in case this hasn't been done before
+    folds = np.split(ds, k)
+    confusionTotal = np.zeros((4, 4))
+
+    for i in range(0, k):
+        # use i as test set and !i as training set
+        testSet = folds[i]
+        trainingSet = np.concatenate(
+            list(folds[j] for j in range(0, k) if j != i))
+
+        root, depth, leafCount = decision_tree_learning(trainingSet)
+        root.perfectlyPruned(testSet, root)
+
+        confusion = confusionMatrix(testSet, root)
+        print(i, ":", confusion)
+        confusionTotal = np.add(confusionTotal, confusion)
+
+    return confusionTotal/k
 
 
 def plot_graph(root, xmin, xmax, ymin, ymax, gap, ax):
@@ -343,7 +362,8 @@ def main():
     # np.set_printoptions(threshold=np.inf)
     ds = loadClean()
     np.random.shuffle(ds)
-    confusionAvg = crossValidate_confusion(ds)
+    confusionAvg = prunedCrossValidate_confusion(ds)
+    print("Average: ", confusionAvg)
 
     # folds = np.split(ds, 2)
     # testSet = folds[0]
