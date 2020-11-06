@@ -10,9 +10,7 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
 
     for currentLabel in ds:
         if(currentLabel[7] != firstLabel):
-            # find_split → attribute index "i", decision value "n"
             i, n = find_split(ds)
-            #print("Split on ", i, " by ", n)
 
             for row in ds:
                 if(row[i] > n):
@@ -20,7 +18,6 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
                 else:
                     left_ds = np.vstack([left_ds, row])
 
-            #print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
 
             # recursivly split into subsets
             if(left_ds.size != 0):
@@ -33,7 +30,6 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
             # return DECISION NODE
             return Node(i, n, ds, 0, lChild, rChild), max(lDepth, rDepth), leafCount
 
-    #print("------ Leaf:", firstLabel, depth, len(ds))
     leafCount += 1
     # return LEAF NODE
     return Node(7, None, ds, firstLabel), depth, leafCount

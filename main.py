@@ -77,9 +77,9 @@ def main(argv):
     #print("Average: ", confusionAvg)
     np.random.shuffle(ds)
 
-    folds = np.split(ds, 10)
+    folds = np.split(mini_ds, 2)
     testSet = folds[0]
-    trainingSet = np.concatenate(folds[1:])
+    #trainingSet = np.concatenate(folds[1:])
     print(testSet)
 
     root, depth, leafCount = decision_tree_learning(trainingSet)
@@ -88,62 +88,7 @@ def main(argv):
     root.perfectlyPruned(testSet, root)
     pruned = True
     root.draw(pruned)
-    # # print(len(testSet))
-    # # print(folds[0])
-    # #trainingSet = np.concatenate(folds[1:])
-    # print(testSet)
-    # print("––––––––––––––––––")
-    # print(trainingSet)
-    # '''
-    # root, depth, leafCount = decision_tree_learning(trainingSet)
-    # pruned = False
-    # #md = root.max_depth()
-    #
-    # # fig, ax = plt.subplots(figsize=(1000, 10))
-    # # gap = 1.0/depth
-    # # plt.axis('off')
-    # #plt.title("Unpruned Tree, depth:"+str(md), loc='left')
-    # root.draw(pruned)
-    # # plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
-    # # #ax.set_title("Unpruned Tree, depth:"+str(md), align="left")
-    # # fig.subplots_adjust(top=0.95)
-    # # fig.subplots_adjust(bottom=0.03)
-    # # fig.subplots_adjust(left=0.03)
-    # # fig.subplots_adjust(right=0.99)
-    # # plt.show()
-    #
-    #
-    # #print("unpruned depth:", md)
-    #
-    # #print(evaluate(testSet, root))
-    #
-    # print("Pruning!")
-    # # # Split into actual validation set later!!!
-    # root.perfectlyPruned(testSet, root)
-    # pruned = True
-    # # avgAccuracy = crossValidate(ds)
-    # # print("average accuracy: ", avgAccuracy)
-    # #prune(root, testSet)
-    #
-    # #nmd = root.max_depth()
-    #
-    # # fig, ax = plt.subplots(figsize=(1000, 10))
-    # # gap = 1.0/depth
-    # # plt.axis('off')
-    # #plt.title("Pruned Tree, depth:"+str(nmd), loc='left')
-    # root.draw(pruned)
-    # # plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
-    # # #ax.set_title("Pruned Tree, depth:"+str(nmd), align="left")
-    # # fig.subplots_adjust(top=0.95)
-    # # fig.subplots_adjust(bottom=0.03)
-    # # fig.subplots_adjust(left=0.03)
-    # # fig.subplots_adjust(right=0.99)
-    # # plt.show()
-    #
-    #
-    # #print("pruned depth:", nmd)
-    #
-    # '''
+
     return  # root, testSet
 
 

@@ -21,12 +21,6 @@ class Node:
         self.dataset = dataset
         self.pruned = pruned
 
-    # def tree_copy():
-    #     if(self.left != None):
-    #         left = self.left.tree_copy()
-    #     if(self.right != None):
-    #         right = self.right.tree_copy()
-    #     return Node(attribute, value, dataset, left, right)
 
     def perfectlyPruned(self, valset, root):
 
