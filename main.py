@@ -9,35 +9,36 @@ from matplotlib.collections import PatchCollection
 from collections import deque
 
 
-def plot_graph(root, xmin, xmax, ymin, ymax, gap, ax):
-    queue = deque([(root, xmin, xmax, ymin, ymax)])
-    while len(queue) > 0:
-        q = queue.popleft()
-        node = q[0]
-        xmin = q[1]
-        xmax = q[2]
-        ymin = q[3]
-        ymax = q[4]
-        atri = node.attribute
-        val = node.value
-        text = '['+str(atri)+']:'+str(val)
+def plot_graph(root, x1, x2, y1, y2, gap, ax):
+    #q1 = deque([(root, x1, x2, y1, y2)])
+    q1 = [(root, x1, x2, y1, y2)]
+    while len(q1) > 0:
+        q2 = q1.pop(0)
+        node = q2[0]
+        x1 = q2[1]
+        x2 = q2[2]
+        y1 = q2[3]
+        y2 = q2[4]
+        a = node.attribute
+        v = node.value
+        text = '['+str(a)+']@'+str(v)
 
-        center = xmin+(xmax-xmin)/2.0
-        d = (center-xmin)/2.0
+        center = x1+(x2-x1)/2.0
+        d = (center-x1)/2.0
 
-        if node.left != None:
-            queue.append((node.left, xmin, center, ymin, ymax-gap))
-            ax.annotate(text, xy=(center-d, ymax-gap),
-                        xytext=(center, ymax), arrowprops=dict(arrowstyle="->"),)
+        if node.left is not None:
+            q1.append((node.left, x1, center, y1, y2-gap))
+            ax.annotate(text, xy=(center-d, y2-gap),
+                        xytext=(center, y2), arrowprops=dict(arrowstyle="-"), bbox=dict(boxstyle="round", fc="w"))
 
-        if node.right != None:
-            queue.append((node.right, center, xmax, ymin, ymax-gap))
-            ax.annotate(text, xy=(center+d, ymax-gap),
-                        xytext=(center, ymax), arrowprops=dict(arrowstyle="->"),)
+        if node.right is not None:
+            q1.append((node.right, center, x2, y1, y2-gap))
+            ax.annotate(text, xy=(center+d, y2-gap),
+                        xytext=(center, y2), arrowprops=dict(arrowstyle="-"), bbox=dict(boxstyle="round", fc="w"))
 
         if node.left is None and node.right is None:
-            an1 = ax.annotate(node.leaf, xy=(center, ymax), xycoords="data", va="bottom", ha="center",
-                              bbox=dict(boxstyle="round", fc="w"))
+            an1 = ax.annotate(node.leaf, xy=(center, y2), xycoords="data", va="bottom", ha="center",
+                              bbox=dict(color="green", boxstyle="circle", fc="w"))
 
 
 def loadClean():
@@ -53,8 +54,10 @@ def main():
     # np.set_printoptions(threshold=np.inf)
     ds = loadNoisy()
     np.random.shuffle(ds)
+    lol = np.split(ds,40)
+    mini_ds = lol[0]
 
-    folds = np.split(ds, 2)
+    folds = np.split(mini_ds, 2)
     testSet = folds[0]
     # print(len(testSet))
     # print(folds[0])
@@ -70,13 +73,13 @@ def main():
 
     print("Pruning!")
     # Split into actual validation set later!!!
-    root.perfectlyPruned(testSet, root)
+    #root.perfectlyPruned(testSet, root)
 
     # avgAccuracy = crossValidate(ds)
     # print("average accuracy: ", avgAccuracy)
     #prune(root, testSet)
 
-    fig, ax = plt.subplots(figsize=(18, 10))
+    fig, ax = plt.subplots(figsize=(1000, 10))
     gap = 1.0/depth
     plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
     fig.subplots_adjust(top=0.98)
