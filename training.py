@@ -1,8 +1,5 @@
 import numpy as np
-from evaluate import *
 from node import *
-
-
 
 def decision_tree_learning(ds, depth=0, leafCount=0):
 
@@ -15,7 +12,7 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
         if(currentLabel[7] != firstLabel):
             # find_split → attribute index "i", decision value "n"
             i, n = find_split(ds)
-            print("Split on ", i, " by ", n)
+            #print("Split on ", i, " by ", n)
 
             for row in ds:
                 if(row[i] > n):
@@ -23,9 +20,9 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
                 else:
                     left_ds = np.vstack([left_ds, row])
 
-            print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
+            #print("LDS: ", left_ds.size/8, "RDS: ", right_ds.size/8)
 
-            # recursion
+            # recursivly split into subsets
             if(left_ds.size != 0):
                 lChild, lDepth, leafCount = decision_tree_learning(
                     left_ds, depth+1, leafCount)
@@ -33,26 +30,25 @@ def decision_tree_learning(ds, depth=0, leafCount=0):
                 rChild, rDepth, leafCount = decision_tree_learning(
                     right_ds, depth+1, leafCount)
 
-            # return decision node
+            # return DECISION NODE
             return Node(i, n, ds, 0, lChild, rChild), max(lDepth, rDepth), leafCount
 
-    print("------ Leaf:", firstLabel, depth, len(ds))
+    #print("------ Leaf:", firstLabel, depth, len(ds))
     leafCount += 1
-    # return leaf node
+    # return LEAF NODE
     return Node(7, None, ds, firstLabel), depth, leafCount
 
 
 def find_split(ds):
 
-    mx = 0.0
-    # Sleft = np.empty(shape=[0, 1])
-    # Sright = np.empty(shape=[0, 1])
+    maxGain = 0.0
 
     for i in range(0, 7):
         ds = ds[ds[:, i].argsort()]
         col = ds[:, i]
         rooms = ds[:, 7]
 
+        # unique attributes in column i ordered in increasing order
         uniqueCol = np.unique(col)
         if(len(uniqueCol) == 1):
             continue
@@ -65,8 +61,8 @@ def find_split(ds):
 
             gain = info_gain(ds[:, 7], Sleft, Sright)
 
-            if(gain > mx):
-                mx = gain
+            if(gain > maxGain):
+                maxGain = gain
                 attribute = i
                 val = j
 
