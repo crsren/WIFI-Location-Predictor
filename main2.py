@@ -123,6 +123,7 @@ class Node:
         self.right = right
         self.leaf = leaf
         self.dataset = dataset
+        self.pruned = pruned
 
     # def tree_copy():
     #     if(self.left != None):
@@ -137,12 +138,12 @@ class Node:
         if(self.leaf != 0):
             return True  # nothing to prune
 
-        # if(self.left != None):
+        if(self.left != None):
             # prune left subtree as much as possible
-        leftIsLeaf = self.left.perfectlyPruned(valset, root)
-        # if(self.right != None):
-        # prune right subtree as much as possible
-        rightIsLeaf = self.right.perfectlyPruned(valset, root)
+            leftIsLeaf = self.left.perfectlyPruned(valset, root)
+        if(self.right != None):
+            # prune right subtree as much as possible
+            rightIsLeaf = self.right.perfectlyPruned(valset, root)
 
         if(leftIsLeaf and rightIsLeaf):
             # both children had been turned into leaf nodes, try if pruning this one optimzes the tree
@@ -319,35 +320,37 @@ def prunedCrossValidate_confusion(ds, k=10):
     return confusionTotal/k
 
 
-def plot_graph(root, xmin, xmax, ymin, ymax, gap, ax):
-    queue = deque([(root, xmin, xmax, ymin, ymax)])
-    while len(queue) > 0:
-        q = queue.popleft()
-        node = q[0]
-        xmin = q[1]
-        xmax = q[2]
-        ymin = q[3]
-        ymax = q[4]
-        atri = node.attribute
-        val = node.value
-        text = '['+str(atri)+']:'+str(val)
+def plot_graph(root, x1, x2, y1, y2, gap, ax):
+    #q1 = deque([(root, x1, x2, y1, y2)])
+    q1 = [(root, x1, x2, y1, y2)]
+    while len(q1) > 0:
+        q2 = q1.pop(0)
+        node = q2[0]
+        x1 = q2[1]
+        x2 = q2[2]
+        y1 = q2[3]
+        y2 = q2[4]
+        a = node.attribute
+        v = node.value
+        p = node.pruned
+        text = '['+str(a)+']@'+str(v)  # +'->'+str(p)
 
-        center = xmin+(xmax-xmin)/2.0
-        d = (center-xmin)/2.0
+        center = x1+(x2-x1)/2.0
+        d = (center-x1)/2.0
 
-        if node.left != None:
-            queue.append((node.left, xmin, center, ymin, ymax-gap))
-            ax.annotate(text, xy=(center-d, ymax-gap),
-                        xytext=(center, ymax), arrowprops=dict(arrowstyle="->"),)
+        if node.left is not None:
+            q1.append((node.left, x1, center, y1, y2-gap))
+            ax.annotate(text, xy=(center-d, y2-gap),
+                        xytext=(center, y2), arrowprops=dict(arrowstyle="-"), bbox=dict(boxstyle="round", fc="w"))
 
-        if node.right != None:
-            queue.append((node.right, center, xmax, ymin, ymax-gap))
-            ax.annotate(text, xy=(center+d, ymax-gap),
-                        xytext=(center, ymax), arrowprops=dict(arrowstyle="->"),)
+        if node.right is not None:
+            q1.append((node.right, center, x2, y1, y2-gap))
+            ax.annotate(text, xy=(center+d, y2-gap),
+                        xytext=(center, y2), arrowprops=dict(arrowstyle="-"), bbox=dict(boxstyle="round", fc="w"))
 
         if node.left is None and node.right is None:
-            an1 = ax.annotate(node.leaf, xy=(center, ymax), xycoords="data", va="bottom", ha="center",
-                              bbox=dict(boxstyle="round", fc="w"))
+            an1 = ax.annotate(node.leaf, xy=(center, y2), xycoords="data", va="bottom", ha="center",
+                              bbox=dict(color="green", boxstyle="circle", fc="w"))
 
 
 def loadClean():
@@ -368,36 +371,48 @@ def main():
     confusionAvg = crossValidate_confusion(entire_ds)
     print("Average: ", confusionAvg)
 
-    # folds = np.split(ds, 2)
-    # testSet = folds[0]
+    lol = np.split(ds, 40)
+    mini_ds = lol[0]
+
+    folds = np.split(mini_ds, 2)
+    testSet = folds[0]
+    trainingSet = folds[1]
     # # print(len(testSet))
     # # print(folds[0])
     # #trainingSet = np.concatenate(folds[1:])
-    # trainingSet = folds[1]
     # print(testSet)
     # print("––––––––––––––––––")
     # print(trainingSet)
 
-    #root, depth, leafCount = decision_tree_learning(trainingSet)
+    root, depth, leafCount = decision_tree_learning(trainingSet)
+
+    fig, ax = plt.subplots(figsize=(1000, 10))
+    gap = 1.0/depth
+    plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
+    fig.subplots_adjust(top=0.98)
+    fig.subplots_adjust(bottom=0.03)
+    fig.subplots_adjust(left=0.03)
+    fig.subplots_adjust(right=0.99)
+    plt.show()
 
     #print(evaluate(testSet, root))
 
-    # print("Pruning!")
+    print("Pruning!")
     # # Split into actual validation set later!!!
-    # root.perfectlyPruned(testSet, root)
+    root.perfectlyPruned(testSet, root)
 
     # avgAccuracy = crossValidate(ds)
     # print("average accuracy: ", avgAccuracy)
     #prune(root, testSet)
 
-    # fig, ax = plt.subplots(figsize=(18, 10))
-    # gap = 1.0/depth
-    # plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
-    # fig.subplots_adjust(top=0.98)
-    # fig.subplots_adjust(bottom=0.03)
-    # fig.subplots_adjust(left=0.03)
-    # fig.subplots_adjust(right=0.99)
-    # plt.show()
+    fig, ax = plt.subplots(figsize=(1000, 10))
+    gap = 1.0/depth
+    plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
+    fig.subplots_adjust(top=0.98)
+    fig.subplots_adjust(bottom=0.03)
+    fig.subplots_adjust(left=0.03)
+    fig.subplots_adjust(right=0.99)
+    plt.show()
 
     return  # root, testSet
 

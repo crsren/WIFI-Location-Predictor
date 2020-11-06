@@ -89,7 +89,7 @@ def main():
 
     print("Pruning!")
     # Split into actual validation set later!!!
-    #root.perfectlyPruned(testSet, root)
+    root.perfectlyPruned(testSet, root)
 
     # avgAccuracy = crossValidate(ds)
     # print("average accuracy: ", avgAccuracy)
