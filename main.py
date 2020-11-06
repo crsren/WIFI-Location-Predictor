@@ -1,15 +1,13 @@
-import numpy as np
-from node import *
-from build import *
-from evaluate import *
-
 import matplotlib.pyplot as plt
 import matplotlib.path as mpath
 import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 from collections import deque
-
+import numpy as np
+from testing import *
+from training import *
+from node import *
 
 def plot_graph(root, x1, x2, y1, y2, gap, ax):
     #q1 = deque([(root, x1, x2, y1, y2)])
@@ -23,7 +21,8 @@ def plot_graph(root, x1, x2, y1, y2, gap, ax):
         y2 = q2[4]
         a = node.attribute
         v = node.value
-        text = '['+str(a)+']@'+str(v)
+        p = node.pruned
+        text = '['+str(a)+']@'+str(v)  # +'->'+str(p)
 
         center = x1+(x2-x1)/2.0
         d = (center-x1)/2.0
@@ -42,6 +41,22 @@ def plot_graph(root, x1, x2, y1, y2, gap, ax):
             an1 = ax.annotate(node.leaf, xy=(center, y2), xycoords="data", va="bottom", ha="center",
                               bbox=dict(color="green", boxstyle="circle", fc="w"))
 
+def max_depth(node):
+    if node is None:
+        return 0 ;
+
+    else :
+
+        # Compute the depth of each subtree
+        lDepth = max_depth(node.left)
+        rDepth = max_depth(node.right)
+
+        # Use the larger one
+        if (lDepth > rDepth):
+            return lDepth+1
+        else:
+            return rDepth+1
+
 
 def loadClean():
     return np.loadtxt("wifi_db/clean_dataset.txt")
@@ -52,43 +67,46 @@ def loadNoisy():
 
 
 def main():
-    np.random.seed(100)
     # np.set_printoptions(threshold=np.inf)
-    ds = loadClean()
-    np.random.shuffle(ds)
+    clean_ds = loadClean()
+    noisy_ds = loadNoisy()
+    entire_ds = np.vstack((clean_ds, noisy_ds))
+    np.random.shuffle(entire_ds)
+    #confusionAvg = prunedCrossValidate_confusion(entire_ds)
+    confusionAvg = crossValidate_confusion(clean_ds)
+    #print("Average: ", confusionAvg)
 
-    lol = np.split(ds,40)
+    lol = np.split(clean_ds, 40)
     mini_ds = lol[0]
 
     folds = np.split(mini_ds, 2)
     testSet = folds[0]
-    # print(len(testSet))
-    # print(folds[0])
-    #trainingSet = np.concatenate(folds[1:])
     trainingSet = folds[1]
-    print(testSet)
-    print("––––––––––––––––––")
-    print(trainingSet)
-
-    confusionAvg = crossValidate_confusion(ds)
-
-    # folds = np.split(ds, 2)
-    # testSet = folds[0]
     # # print(len(testSet))
     # # print(folds[0])
     # #trainingSet = np.concatenate(folds[1:])
-    # trainingSet = folds[1]
     # print(testSet)
     # print("––––––––––––––––––")
     # print(trainingSet)
 
+    root, depth, leafCount = decision_tree_learning(trainingSet)
 
-    #root, depth, leafCount = decision_tree_learning(trainingSet)
+    fig, ax = plt.subplots(figsize=(1000, 10))
+    gap = 1.0/depth
+    plot_graph(root, 0.0, 1.0, 0.0, 1.0, gap, ax)
+    fig.subplots_adjust(top=0.98)
+    fig.subplots_adjust(bottom=0.03)
+    fig.subplots_adjust(left=0.03)
+    fig.subplots_adjust(right=0.99)
+    plt.show()
+
+    md = max_depth(root)
+    print("unpruned depth:", md)
 
     #print(evaluate(testSet, root))
 
     print("Pruning!")
-    # Split into actual validation set later!!!
+    # # Split into actual validation set later!!!
     root.perfectlyPruned(testSet, root)
 
     # avgAccuracy = crossValidate(ds)
@@ -104,7 +122,10 @@ def main():
     fig.subplots_adjust(right=0.99)
     plt.show()
 
-    return root, testSet
+    md = max_depth(root)
+    print("pruned depth:", md)
+
+    return  # root, testSet
 
 
 if __name__ == '__main__':
