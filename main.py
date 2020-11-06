@@ -8,6 +8,8 @@ import numpy as np
 from testing import *
 from training import *
 from node import *
+import sys
+
 
 def plot_graph(root, x1, x2, y1, y2, gap, ax):
     #q1 = deque([(root, x1, x2, y1, y2)])
@@ -66,17 +68,24 @@ def loadNoisy():
     return np.loadtxt("wifi_db/noisy_dataset.txt")
 
 
-def main():
+def main(argv):
     # np.set_printoptions(threshold=np.inf)
-    clean_ds = loadClean()
-    noisy_ds = loadNoisy()
-    entire_ds = np.vstack((clean_ds, noisy_ds))
-    np.random.shuffle(entire_ds)
+    #noisy_ds = loadNoisy()
+    try:
+        ds = np.loadtxt(argv[0])
+    except:
+        print("Unable to open the file, using clean instead")
+        ds = loadClean()
+
+    #entire_ds = np.vstack((ds, noisy_ds))
+
+
+    #np.random.shuffle(entire_ds)
     #confusionAvg = prunedCrossValidate_confusion(entire_ds)
-    confusionAvg = crossValidate_confusion(clean_ds)
+    confusionAvg = crossValidate_confusion(ds)
     #print("Average: ", confusionAvg)
 
-    lol = np.split(clean_ds, 40)
+    lol = np.split(ds, 40)
     mini_ds = lol[0]
 
     folds = np.split(mini_ds, 2)
@@ -88,7 +97,7 @@ def main():
     # print(testSet)
     # print("––––––––––––––––––")
     # print(trainingSet)
-
+    '''
     root, depth, leafCount = decision_tree_learning(trainingSet)
 
     fig, ax = plt.subplots(figsize=(1000, 10))
@@ -125,8 +134,9 @@ def main():
     md = max_depth(root)
     print("pruned depth:", md)
 
+    '''
     return  # root, testSet
 
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
