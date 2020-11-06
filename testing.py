@@ -7,10 +7,8 @@ def predict(node, signals):  # function to predict
         return node.leaf
 
     if(signals[node.attribute] > node.value):
-        # print(node.attribute,": ", signals[node.attribute], " > ", node.value)
         return predict(node.right, signals)
     else:
-        # print(node.attribute,": ", signals[node.attribute], " < ", node.value)
         return predict(node.left, signals)
 
 
@@ -18,8 +16,6 @@ def evaluate(ds, tree):  # return accuracy
     correct = 0
 
     for dp in ds:
-        # print(dp)
-        # print("Actual: ", dp[7], " | Predicted: ", predict(tree, dp))
         if(predict(tree, dp) == dp[7]):
             correct += 1
 
@@ -31,13 +27,10 @@ def confusionMatrix(ds, tree):  # returns confusion matrix
 
     for dp in ds:
         predicted = predict(tree, dp)
-        #print("(CM) Actual: ", int(dp[7]), " | Predicted: ", predicted)
         confusion[int(dp[7])-1][int(predicted)-1] += 1
 
     return confusion
 
-# def plotCM(cm):
-    # TODO
 
 
 # return an array of precision for each room, takes in a cunfussion matrix
@@ -88,7 +81,6 @@ def crossValidate(ds, k=10):
 
     return accuracy/k
 
-    #training_ds= ds[:n,:]
 
 
 def crossValidate_confusion(ds, k=10):
