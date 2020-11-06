@@ -116,7 +116,7 @@ connection = dict(arrowstyle="-")
 
 class Node:
     # if leaf = 0 this is not a leaf node
-    def __init__(self,  attribute, value, dataset, leaf=0, left=None, right=None):
+    def __init__(self,  attribute, value, dataset, leaf=0, left=None, right=None, pruned=False):
         self.attribute = attribute
         self.value = value
         self.left = left
@@ -145,7 +145,7 @@ class Node:
             rightIsLeaf = self.left.perfectlyPruned(valset, root)
 
         if(leftIsLeaf and rightIsLeaf):
-            # both children had been turned into leaf nodes, try if pruning this one
+            # both children had been turned into leaf nodes, try if pruning this one optimzes the tree
             return self.smartPrune(valset, root)
         else:
             return False  # At least one child wasn't pruned
@@ -153,17 +153,16 @@ class Node:
     # returns True if pruning resulted in a more accuracte result, wherefore pruning was carried out
     # return False if the pruned tree was less accurate, wherefore the pruned was reversed
     def smartPrune(self, valset, root):
+        self.pruned = True
         if(self.leaf):
             # nothing to prune (in case called outside of perfectly pruned)
             return True
         else:
-            # WE MIGHT WANNA USE CROSS VALIDATE INSTEAD
             pre_accuracy = evaluate(valset, root)
 
             intLabels = self.dataset[:, 7].astype(np.int)
             self.leaf = np.argmax(np.bincount(intLabels))
 
-            # WE MIGHT WANNA USE CROSS VALIDATE INSTEAD
             post_accuracy = evaluate(valset, root)
 
             print("pre: ", pre_accuracy, "post: ", post_accuracy)
