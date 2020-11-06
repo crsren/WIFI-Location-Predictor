@@ -79,9 +79,9 @@ def main(argv):
     lol = np.split(ds, 20)
     mini_ds = lol[0]
 
-    folds = np.split(ds, 10)
+    folds = np.split(mini_ds, 2)
     testSet = folds[0]
-    trainingSet = folds[1:]
+    trainingSet = folds[1]
 
     root, depth, leafCount = decision_tree_learning(trainingSet)
     pruned = False
